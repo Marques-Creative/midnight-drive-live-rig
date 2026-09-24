@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1781983088164,
+      "tag": "0000_mean_mojo",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1781983176073,
+      "tag": "0001_romantic_lily_hollister",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1781985730659,
+      "tag": "0002_military_gamma_corps",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1782044571833,
+      "tag": "0003_oval_revanche",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1782066155319,
+      "tag": "0004_aspiring_onslaught",
+      "breakpoints": true
+    }
+  ]
+}

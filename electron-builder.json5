@@ -1,0 +1,92 @@
+{
+  /**
+   * electron-builder configuration for ROCKDJ
+   * Target: macOS arm64 (Apple Silicon M1/M2/M3/M4)
+   */
+  appId: "com.midnightdrive.liverig",
+  productName: "ROCKDJ",
+  copyright: "Copyright © 2026 London Romantic",
+
+  // Output directory for the packaged app
+  directories: {
+    output: "dist-app"
+  },
+
+  // Files to include in the app bundle
+  files: [
+    "dist-electron/**",
+    "dist/**",
+    "!dist/**/*.map",
+    "node_modules/**",
+    "!node_modules/.cache/**",
+    "package.json"
+  ],
+
+  // Extra resources bundled alongside the app (server bundle + assets)
+  // Note: electron-builder ignores node_modules in extraResources by default.
+  // We work around this by splitting the copy into two entries.
+  extraResources: [
+    {
+      from: "dist-server",
+      to: "server",
+      filter: ["index.js", "package.json", "public/**"]
+    },
+    {
+      from: "dist-server/node_modules",
+      to: "server/node_modules",
+      filter: ["**/*"]
+    },
+    {
+      // Native ROCKDJ audio engine binary. Built by:
+      //   cd native/rockdj-engine && cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j4
+      // Lands at Resources/engine/rockdj-engine (see ENGINE_ENTRY in electron/main.ts).
+      from: "native/rockdj-engine/build/rockdj-engine_artefacts/Release",
+      to: "engine",
+      filter: ["rockdj-engine"]
+    }
+  ],
+
+  // Ensure native modules in node_modules are included
+  asarUnpack: [
+    "**/node_modules/better-sqlite3/**",
+    "**/better_sqlite3.node"
+  ],
+
+  // macOS specific config
+  mac: {
+    category: "public.app-category.music",
+    target: [
+      {
+        target: "dmg",
+        arch: ["arm64"]
+      },
+      {
+        target: "zip",
+        arch: ["arm64"]
+      }
+    ],
+    hardenedRuntime: false,
+    gatekeeperAssess: false,
+    // No code signing for local dev builds
+    identity: null
+  },
+
+  dmg: {
+    title: "ROCKDJ",
+    contents: [
+      { x: 130, y: 220, type: "file" },
+      { x: 410, y: 220, type: "link", path: "/Applications" }
+    ],
+    window: { width: 540, height: 380 }
+  },
+
+  // Do NOT let electron-builder rebuild native modules — it only touches the
+  // project root node_modules, not dist-server/node_modules (extraResources).
+  // The build script handles rebuilding better-sqlite3 for Electron's ABI
+  // directly in dist-server using @electron/rebuild before packaging.
+  npmRebuild: false,
+  buildDependenciesFromSource: false,
+
+  // Don't publish anywhere — local build only
+  publish: null
+}

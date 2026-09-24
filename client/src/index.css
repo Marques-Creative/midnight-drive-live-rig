@@ -1,0 +1,429 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ── Midnight Drive Design Tokens ─────────────────────────────────────────── */
+:root {
+  /* Core palette */
+  --md-black:       #080a0f;
+  --md-surface:     #0d1117;
+  --md-surface-2:   #141922;
+  --md-surface-3:   #1c2433;
+  --md-border:      #1e2d42;
+  --md-border-2:    #2a3f5a;
+
+  /* Accent colors */
+  --md-blue:        #00b4ff;
+  --md-blue-dim:    #0077aa;
+  --md-blue-glow:   rgba(0, 180, 255, 0.15);
+  --md-magenta:     #ff2d78;
+  --md-magenta-dim: #aa1a50;
+  --md-magenta-glow:rgba(255, 45, 120, 0.15);
+
+  /* Text */
+  --md-text:        #e8f0fe;
+  --md-text-dim:    #8899bb;
+  --md-text-muted:  #445566;
+
+  /* Status */
+  --md-green:       #00ff88;
+  --md-yellow:      #ffcc00;
+  --md-red:         #ff3355;
+
+  /* Radius */
+  --radius: 0.5rem;
+
+  /* Tailwind / shadcn CSS variable mapping */
+  --background:         var(--md-black);
+  --foreground:         var(--md-text);
+  --card:               var(--md-surface);
+  --card-foreground:    var(--md-text);
+  --popover:            var(--md-surface-2);
+  --popover-foreground: var(--md-text);
+  --primary:            var(--md-blue);
+  --primary-foreground: var(--md-black);
+  --secondary:          var(--md-surface-3);
+  --secondary-foreground: var(--md-text);
+  --muted:              var(--md-surface-2);
+  --muted-foreground:   var(--md-text-dim);
+  --accent:             var(--md-magenta);
+  --accent-foreground:  var(--md-black);
+  --destructive:        var(--md-red);
+  --destructive-foreground: #fff;
+  --border:             var(--md-border);
+  --input:              var(--md-surface-3);
+  --ring:               var(--md-blue);
+  --sidebar-background: var(--md-surface);
+  --sidebar-foreground: var(--md-text);
+  --sidebar-primary:    var(--md-blue);
+  --sidebar-primary-foreground: var(--md-black);
+  --sidebar-accent:     var(--md-surface-3);
+  --sidebar-accent-foreground: var(--md-text);
+  --sidebar-border:     var(--md-border);
+  --sidebar-ring:       var(--md-blue);
+}
+
+/* Force dark theme always */
+html {
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background:         oklch(from var(--background) l c h);
+  --color-foreground:         oklch(from var(--foreground) l c h);
+  --color-card:               oklch(from var(--card) l c h);
+  --color-card-foreground:    oklch(from var(--card-foreground) l c h);
+  --color-popover:            oklch(from var(--popover) l c h);
+  --color-popover-foreground: oklch(from var(--popover-foreground) l c h);
+  --color-primary:            oklch(from var(--primary) l c h);
+  --color-primary-foreground: oklch(from var(--primary-foreground) l c h);
+  --color-secondary:          oklch(from var(--secondary) l c h);
+  --color-secondary-foreground: oklch(from var(--secondary-foreground) l c h);
+  --color-muted:              oklch(from var(--muted) l c h);
+  --color-muted-foreground:   oklch(from var(--muted-foreground) l c h);
+  --color-accent:             oklch(from var(--accent) l c h);
+  --color-accent-foreground:  oklch(from var(--accent-foreground) l c h);
+  --color-destructive:        oklch(from var(--destructive) l c h);
+  --color-destructive-foreground: oklch(from var(--destructive-foreground) l c h);
+  --color-border:             oklch(from var(--border) l c h);
+  --color-input:              oklch(from var(--input) l c h);
+  --color-ring:               oklch(from var(--ring) l c h);
+  --color-sidebar-background: oklch(from var(--sidebar-background) l c h);
+  --color-sidebar-foreground: oklch(from var(--sidebar-foreground) l c h);
+  --color-sidebar-primary:    oklch(from var(--sidebar-primary) l c h);
+  --color-sidebar-primary-foreground: oklch(from var(--sidebar-primary-foreground) l c h);
+  --color-sidebar-accent:     oklch(from var(--sidebar-accent) l c h);
+  --color-sidebar-accent-foreground: oklch(from var(--sidebar-accent-foreground) l c h);
+  --color-sidebar-border:     oklch(from var(--sidebar-border) l c h);
+  --color-sidebar-ring:       oklch(from var(--sidebar-ring) l c h);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* ── Base styles ──────────────────────────────────────────────────────────── */
+* {
+  border-color: var(--md-border);
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--md-black);
+  background-image:
+    linear-gradient(to right, rgba(5,5,15,0.88) 0%, rgba(5,5,15,0.65) 45%, rgba(5,5,15,0.25) 100%),
+    url('/manus-storage/dashboard-bg_61c0c24f.png');
+  background-size: cover;
+  background-position: top right;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: var(--md-text);
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'SF Mono', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Karaoke line entrance animation ── */
+@keyframes karaoke-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.karaoke-line-enter {
+  animation: karaoke-enter 0.25s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--md-surface); }
+::-webkit-scrollbar-thumb { background: var(--md-border-2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--md-blue-dim); }
+
+/* ── Flex defaults ────────────────────────────────────────────────────────── */
+.flex { min-width: 0; min-height: 0; }
+
+/* ── Container ────────────────────────────────────────────────────────────── */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* ── Glow utilities ───────────────────────────────────────────────────────── */
+.glow-blue  { box-shadow: 0 0 20px var(--md-blue-glow), 0 0 40px var(--md-blue-glow); }
+.glow-magenta { box-shadow: 0 0 20px var(--md-magenta-glow), 0 0 40px var(--md-magenta-glow); }
+.text-glow-blue { text-shadow: 0 0 12px var(--md-blue), 0 0 24px var(--md-blue-glow); }
+.text-glow-magenta { text-shadow: 0 0 12px var(--md-magenta), 0 0 24px var(--md-magenta-glow); }
+
+/* ── Stage button ─────────────────────────────────────────────────────────── */
+.btn-stage {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 160ms cubic-bezier(0.23, 1, 0.32, 1);
+  border: 1px solid transparent;
+  user-select: none;
+}
+.btn-stage:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--md-blue);
+  color: var(--md-black);
+  border-color: var(--md-blue);
+}
+.btn-primary:hover { background: #33c8ff; box-shadow: 0 0 16px var(--md-blue-glow); }
+
+.btn-danger {
+  background: var(--md-red);
+  color: #fff;
+  border-color: var(--md-red);
+}
+.btn-danger:hover { background: #ff5577; }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--md-text-dim);
+  border-color: var(--md-border);
+}
+.btn-ghost:hover { background: var(--md-surface-2); color: var(--md-text); border-color: var(--md-border-2); }
+
+/* ── Card surface ─────────────────────────────────────────────────────────── */
+.md-card {
+  background: var(--md-surface);
+  border: 1px solid var(--md-border);
+  border-radius: var(--radius);
+}
+
+.md-card-2 {
+  background: var(--md-surface-2);
+  border: 1px solid var(--md-border);
+  border-radius: var(--radius);
+}
+
+/* ── Input ────────────────────────────────────────────────────────────────── */
+input, textarea, select {
+  background: var(--md-surface-3);
+  border: 1px solid var(--md-border);
+  color: var(--md-text);
+  border-radius: var(--radius);
+  font-family: inherit;
+  transition: border-color 160ms ease;
+}
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--md-blue);
+  box-shadow: 0 0 0 2px var(--md-blue-glow);
+}
+
+/* ── Progress bar ─────────────────────────────────────────────────────────── */
+.progress-track {
+  background: var(--md-surface-3);
+  border-radius: 9999px;
+  overflow: hidden;
+  height: 6px;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--md-blue), var(--md-magenta));
+  border-radius: 9999px;
+  transition: width 0.5s linear;
+}
+
+/* ── Live screen typography ───────────────────────────────────────────────── */
+.live-title {
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--md-text);
+}
+
+.live-meta {
+  font-size: 0.75rem;
+  color: var(--md-text-dim);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.live-time {
+  font-size: clamp(1rem, 2.2vw, 1.6rem);
+  font-weight: 600;
+  color: var(--md-blue);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Stem channel strip ───────────────────────────────────────────────────── */
+.stem-channel {
+  background: var(--md-surface-2);
+  border: 1px solid var(--md-border);
+  border-radius: var(--radius);
+  padding: 0.75rem 0.625rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  transition: border-color 160ms ease, opacity 150ms ease;
+}
+.stem-channel:hover { border-color: var(--md-border-2); }
+.stem-channel.muted { opacity: 0.45; }
+
+/* Vertical range fader — rotate native input 90° */
+.fader-vertical {
+  -webkit-appearance: none;
+  appearance: none;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 4px;
+  cursor: pointer;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+.fader-vertical::-webkit-slider-runnable-track {
+  width: 4px;
+  border-radius: 2px;
+  background: var(--md-surface-3);
+}
+.fader-vertical::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--md-text);
+  border: 2px solid var(--md-border-2);
+  box-shadow: 0 0 6px rgba(0,0,0,0.5);
+  cursor: grab;
+  margin-left: -7px;
+  transition: background 120ms ease, box-shadow 120ms ease;
+}
+.fader-vertical::-webkit-slider-thumb:active { cursor: grabbing; }
+.fader-vertical::-moz-range-track {
+  width: 4px;
+  border-radius: 2px;
+  background: var(--md-surface-3);
+}
+.fader-vertical::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--md-text);
+  border: 2px solid var(--md-border-2);
+  cursor: grab;
+}
+
+/* Mute button — red M badge */
+.mute-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  user-select: none;
+  transition: background 120ms ease, color 120ms ease, box-shadow 120ms ease;
+  border: 1px solid transparent;
+}
+.mute-btn.active {
+  background: var(--md-red);
+  color: #fff;
+  border-color: var(--md-red);
+  box-shadow: 0 0 8px rgba(255,51,85,0.5);
+}
+.mute-btn.inactive {
+  background: var(--md-surface-3);
+  color: var(--md-text-muted);
+  border-color: var(--md-border);
+}
+.mute-btn.inactive:hover {
+  background: rgba(255,51,85,0.12);
+  color: var(--md-red);
+  border-color: rgba(255,51,85,0.3);
+}
+
+/* ── Lyrics panel ─────────────────────────────────────────────────────────── */
+.lyrics-panel {
+  font-size: 1.1rem;
+  line-height: 2;
+  color: var(--md-text-dim);
+}
+.lyrics-panel .chord {
+  color: var(--md-blue);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+}
+.lyrics-panel .section-header {
+  color: var(--md-magenta);
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+.lyrics-panel .active-line {
+  color: var(--md-text);
+  font-size: 1.25rem;
+}
+
+/* ── Connection badge ─────────────────────────────────────────────────────── */
+.connection-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.connection-badge.connected {
+  background: rgba(0, 255, 136, 0.1);
+  color: var(--md-green);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+.connection-badge.disconnected {
+  background: rgba(255, 51, 85, 0.1);
+  color: var(--md-red);
+  border: 1px solid rgba(255, 51, 85, 0.3);
+}
+
+/* ── Sidebar overrides ────────────────────────────────────────────────────── */
+[data-sidebar="sidebar"] {
+  background: var(--md-surface) !important;
+  border-right: 1px solid var(--md-border) !important;
+}
+
+/* ── Animations ───────────────────────────────────────────────────────────── */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up { animation: slide-up 200ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
