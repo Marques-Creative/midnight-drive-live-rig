@@ -1056,7 +1056,7 @@ void AudioEngine::saveSettings() const
         arr.add (juce::var (bo));
     }
     root->setProperty ("bindings", arr);
-    root->setProperty ("midiDevice", openMidiName);
+    root->setProperty ("midiDevice", openMidiNames.joinIntoString (", "));
     root->setProperty ("preferredOutput", preferredOutputName);
     // Persist tempo ranges so the DJ doesn't have to re-set them after a restart
     juce::Array<juce::var> ranges;
@@ -1124,8 +1124,15 @@ void AudioEngine::loadSettings()
     const juce::String prefOut = v.getProperty ("preferredOutput", "").toString();
     if (prefOut.isNotEmpty()) preferredOutputName = prefOut;
 
-    const juce::String dev = v.getProperty ("midiDevice", "").toString();
-    if (dev.isNotEmpty()) openMidiDevice (dev);
+    // Open all available MIDI inputs automatically (supports multi-port controllers like CDJ-3000)
+    for (auto& m : midiIns) { m->stop(); }
+    midiIns.clear();
+    openMidiNames.clear();
+    for (const auto& d : juce::MidiInput::getAvailableDevices())
+    {
+        auto m = juce::MidiInput::openDevice (d.identifier, this);
+        if (m != nullptr) { m->start(); openMidiNames.add (d.name); midiIns.push_back (std::move (m)); }
+    }
 }
 
 float AudioEngine::getDeckGain (int deckIndex) const
@@ -1321,23 +1328,54 @@ juce::StringArray AudioEngine::getMidiDevices() const
 
 juce::String AudioEngine::openMidiDevice (const juce::String& name)
 {
-    if (midiIn != nullptr) { midiIn->stop(); midiIn.reset(); }
-    openMidiName.clear();
+    for (auto& m : midiIns) { m->stop(); }
+    midiIns.clear();
+    openMidiNames.clear();
     if (name.isEmpty()) return {};
 
     for (const auto& d : juce::MidiInput::getAvailableDevices())
         if (d.name == name)
         {
-            midiIn = juce::MidiInput::openDevice (d.identifier, this);
-            if (midiIn == nullptr) return "could not open MIDI device: " + name;
-            midiIn->start();
-            openMidiName = name;
+            auto m = juce::MidiInput::openDevice (d.identifier, this);
+            if (m == nullptr) return "could not open MIDI device: " + name;
+            m->start();
+            openMidiNames.add (name);
+            midiIns.push_back (std::move (m));
             return {};
         }
     return "MIDI device not found: " + name;
 }
 
-juce::String AudioEngine::getOpenMidiDevice() const { return openMidiName; }
+juce::String AudioEngine::openMidiDevices (const juce::StringArray& names)
+{
+    for (auto& m : midiIns) { m->stop(); }
+    midiIns.clear();
+    openMidiNames.clear();
+    if (names.isEmpty()) return {};
+
+    juce::StringArray errors;
+    for (const auto& name : names)
+    {
+        bool found = false;
+        for (const auto& d : juce::MidiInput::getAvailableDevices())
+        {
+            if (d.name == name)
+            {
+                found = true;
+                auto m = juce::MidiInput::openDevice (d.identifier, this);
+                if (m == nullptr) { errors.add ("could not open: " + name); continue; }
+                m->start();
+                openMidiNames.add (name);
+                midiIns.push_back (std::move (m));
+                break;
+            }
+        }
+        if (!found) errors.add ("not found: " + name);
+    }
+    return errors.joinIntoString (", ");
+}
+
+juce::String AudioEngine::getOpenMidiDevice() const { return openMidiNames.joinIntoString (", "); }
 
 void AudioEngine::setMidiBindings (const std::vector<MidiBinding>& b)
 {

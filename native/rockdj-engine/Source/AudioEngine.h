@@ -470,6 +470,7 @@ public:
     static MidiAction      actionFromString (const juce::String& s);
     juce::StringArray getMidiDevices() const;
     juce::String openMidiDevice (const juce::String& name);   // "" = close
+    juce::String openMidiDevices (const juce::StringArray& names); // open multiple
     juce::String getOpenMidiDevice() const;
     void setMidiBindings (const std::vector<MidiBinding>& b);
     std::vector<MidiBinding> getMidiBindings() const;
@@ -690,10 +691,10 @@ private:
     std::atomic<double> jogSearchPerTick { 0.001 };   // seconds per tick when paused — 1ms/tick = fine cue control
     std::atomic<double> jogDecaySeconds { 0.070 };    // nudge ease-out time constant
 
-    std::unique_ptr<juce::MidiInput>  midiIn;
+    std::vector<std::unique_ptr<juce::MidiInput>> midiIns;
     std::unique_ptr<juce::MidiOutput> midiOut;
     juce::String openMidiOutName;
-    juce::String openMidiName;
+    juce::StringArray openMidiNames;
     std::vector<MidiBinding> midiBindings;
     juce::CriticalSection midiLock;          // guards bindings (MIDI thread reads)
     std::function<void (int, int, int, int)> midiMonitor;

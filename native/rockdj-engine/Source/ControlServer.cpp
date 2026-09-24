@@ -489,7 +489,17 @@ void ControlServer::handleLine (const juce::String& line)
         engine.setCueGain ((float) (double) msg.getProperty ("gain", 1.0));
     else if (cmd == "midiOpen")
     {
-        const juce::String e = engine.openMidiDevice (msg.getProperty ("device", "").toString());
+        juce::String e;
+        if (const auto* arr = msg.getProperty ("devices", juce::var()).getArray())
+        {
+            juce::StringArray names;
+            for (const auto& v : *arr) names.add (v.toString());
+            e = engine.openMidiDevices (names);
+        }
+        else
+        {
+            e = engine.openMidiDevice (msg.getProperty ("device", "").toString());
+        }
         engine.saveSettings();
         auto* o = new juce::DynamicObject();
         o->setProperty ("evt", "midiOpened");
